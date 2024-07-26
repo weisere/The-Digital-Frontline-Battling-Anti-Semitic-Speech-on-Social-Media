@@ -88,7 +88,7 @@ for name, clf in classifiers.items():
     print(f'{name} Training Time: {end_time - start_time:.2f} seconds')
     print(f'{name} Accuracy: {accuracy:.6f}')
     print(f'{name} Precision: {precision_score(y_test, y_pred, pos_label=1):.6f}\n')
-    print(f'Classification Report for {name}:\n{classification_report(y_test, y_pred, target_names=['(0) Non-antisemitic', '(1) Antisemitic'])}\n')
+    print(f'Classification Report for {name}:\n{classification_report(y_test, y_pred, target_names=["(0) Non-antisemitic", "(1) Antisemitic"])}\n')
 
 
 # Function to classify a new text using the ensemble classifier
