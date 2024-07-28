@@ -58,6 +58,7 @@ classifiers = {
     'Gradient Boosting': gbm,
     'Ensemble': VotingClassifier(estimators=[('svm', svm), ('log_reg', log_reg)], voting='hard')
     # 'Ensemble': VotingClassifier(estimators=[('svm', svm), ('log_reg', log_reg), ('random_forest', random_forest), ('gbm', gbm),('dec_tree', dec_tree)], voting='hard')
+    # 'Ensemble': VotingClassifier(estimators=[('random_forest', random_forest), ('gbm', gbm), ('log_reg', log_reg)], voting='hard')
 }
 
 
