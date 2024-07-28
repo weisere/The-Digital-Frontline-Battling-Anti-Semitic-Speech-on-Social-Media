@@ -11,10 +11,10 @@ from joblib import dump, load  # For saving and loading models
 import os  # For checking if files exist
 from sklearn.ensemble import RandomForestClassifier  # Importing Random Forest Classifier
 from sklearn.ensemble import GradientBoostingClassifier # Importing Gradient Boosting Classifier
- 
+
 
 # Load the data from the CSV file using pandas
-data = pd.read_csv('JikeliDataset.csv')
+data = pd.read_csv('C:/Users/bzmor/Class Code/Internship/Other/dataset.csv')
 
 # Define the texts (tweets) and labels (0 = Non-antisemitic, 1 = Antisemitic)
 texts = data['Text'] # "Text" is the column name in the CSV file that contains the tweets
@@ -59,6 +59,7 @@ classifiers = {
     'Ensemble': VotingClassifier(estimators=[('svm', svm), ('log_reg', log_reg)], voting='hard')
     # 'Ensemble': VotingClassifier(estimators=[('svm', svm), ('log_reg', log_reg), ('random_forest', random_forest), ('gbm', gbm),('dec_tree', dec_tree)], voting='hard')
     # 'Ensemble': VotingClassifier(estimators=[('random_forest', random_forest), ('gbm', gbm), ('log_reg', log_reg)], voting='hard')
+
 }
 
 
@@ -72,12 +73,16 @@ dump(random_forest, 'random_forest.joblib')
 dump(gbm, 'gbm.joblib')
 
 
+# Clear the file if it already exists
+if os.path.exists('multiple_classifiers_results.txt'):
+    open('multiple_classifiers_results.txt', 'w').close()
 
 # Train and evaluate each classifier
 for name, clf in classifiers.items():
     # get the starting time
     start_time = time.time()
     # Train the classifier
+    # was clf.fit(X, labels) but should be clf.fit(X_train, y_train) because we want to train on the training data only and not on the entire dataset
     clf.fit(X_train, y_train)
     # Predict the test set
     y_pred = clf.predict(X_test)
@@ -85,13 +90,23 @@ for name, clf in classifiers.items():
     accuracy = accuracy_score(y_test, y_pred)
     # get the ending time
     end_time = time.time()
-    # Print the results
+    """ Print the results and then write the results to a file called 'multiple_classifiers_results.txt'
+     The file will be created in the same directory as the script
+     The 'a' parameter in the open function is for appending to the file
+     If the file does not exist, it will be created
+     Make a new file at the start of the script to clear the previous results     
+     """
     print(f'{name} Training Time: {end_time - start_time:.2f} seconds')
     print(f'{name} Accuracy: {accuracy:.6f}')
     print(f'{name} Precision: {precision_score(y_test, y_pred, pos_label=1):.6f}\n')
     print(f'Classification Report for {name}:\n{classification_report(y_test, y_pred, target_names=["(0) Non-antisemitic", "(1) Antisemitic"])}\n')
+    with open('multiple_classifiers_results.txt', 'a') as file:
+        file.write(f'{name} Training Time: {end_time - start_time:.2f} seconds\n')
+        file.write(f'{name} Accuracy: {accuracy:.6f}\n')
+        file.write(f'{name} Precision: {precision_score(y_test, y_pred, pos_label=1):.6f}\n\n')
+        file.write(f'Classification Report for {name}:\n{classification_report(y_test, y_pred, target_names=["(0) Non-antisemitic", "(1) Antisemitic"])}\n\n')
 
-
+    
 # Function to classify a new text using the ensemble classifier
 def classify_text_ensemble(text):
     # Convert the new text to a TF-IDF vector
