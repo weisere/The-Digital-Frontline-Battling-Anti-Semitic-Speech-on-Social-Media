@@ -19,7 +19,7 @@ from sklearn.preprocessing import LabelEncoder
 
 def train_lstm_model():
     # Load the data
-    data = pd.read_csv('dataset.csv')
+    data = pd.read_csv('JikeliDataset.csv')
     texts = data['Text'].astype(str)
     labels = data['Biased']
     
